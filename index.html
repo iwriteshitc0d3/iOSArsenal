@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iOSArsenal · iOS Application Pentest Checklist</title>
+<meta name="description" content="A trackable, OWASP MASVS/MASTG/MASWE-aligned checklist for iOS application penetration testing — 61 vulnerability playbooks with attacker rationale, multi-technique exploitation PoCs, tools, and mitigations, plus dedicated modules for jailbreaking, jailbreak-detection bypass, and SSL pinning bypass.">
+<meta name="keywords" content="iOS pentest, iOS security testing, OWASP MASVS, OWASP MASTG, OWASP MASWE, mobile application security, jailbreak detection bypass, SSL pinning bypass, Frida, objection, iOS security checklist">
+<meta name="author" content="iOSArsenal contributors">
+<meta name="theme-color" content="#0E0F12">
+
+<!-- Open Graph / social preview -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="iOSArsenal · iOS Application Pentest Checklist">
+<meta property="og:description" content="61 OWASP-aligned iOS pentest playbooks with multi-technique PoCs, plus dedicated jailbreak, jailbreak-detection-bypass, and SSL-pinning-bypass modules.">
+<meta property="og:image" content="assets/social-preview.png">
+<meta property="og:url" content="https://Savage-hack.github.io/iOSArsenal/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="iOSArsenal · iOS Application Pentest Checklist">
+<meta name="twitter:description" content="61 OWASP-aligned iOS pentest playbooks with multi-technique PoCs, plus dedicated jailbreak, jailbreak-detection-bypass, and SSL-pinning-bypass modules.">
+<meta name="twitter:image" content="assets/social-preview.png">
+
+<!-- Emoji favicon — swap for assets/favicon.png if you add a real one -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="top-progress" id="topProgress"></div>
+<div class="back-to-top" id="backToTop" title="Back to top">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+</div>
+<div class="milestone-toast" id="milestoneToast"></div>
+
+<div class="wrap">
+
+  <div style="position:relative;">
+    <svg class="hero-scan" viewBox="0 0 280 280">
+      <g class="sweep-wrap">
+        <defs>
+          <linearGradient id="sweepGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FF9F0A" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#FF9F0A" stop-opacity="0.5"/>
+          </linearGradient>
+        </defs>
+        <path d="M140 140 L140 30 A110 110 0 0 1 220 70 Z" fill="url(#sweepGrad)"/>
+      </g>
+      <circle class="ring" cx="140" cy="140" r="50" fill="none" stroke="#FF9F0A" stroke-width="1.5"/>
+      <circle class="ring ring2" cx="140" cy="140" r="50" fill="none" stroke="#FF9F0A" stroke-width="1.5"/>
+      <circle class="ring ring3" cx="140" cy="140" r="50" fill="none" stroke="#FF9F0A" stroke-width="1.5"/>
+      <circle cx="140" cy="140" r="110" fill="none" stroke="#282B33" stroke-width="1"/>
+      <circle cx="140" cy="140" r="80" fill="none" stroke="#282B33" stroke-width="1"/>
+      <circle cx="140" cy="140" r="50" fill="none" stroke="#282B33" stroke-width="1"/>
+      <circle cx="140" cy="140" r="3" fill="#34C7B8"/>
+      <circle class="blip" cx="95" cy="95" r="3.5" fill="#FF453A"/>
+      <circle class="blip blip2" cx="190" cy="110" r="3" fill="#FFD60A"/>
+      <circle class="blip blip3" cx="165" cy="195" r="3" fill="#64D2FF"/>
+    </svg>
+
+  <span class="eyebrow"><span class="dot"></span>OWASP MASVS · MASTG · iOS</span>
+  <h1 class="title">iOS<span class="mono-i">Arsenal</span></h1>
+  <p class="subtitle">iOS Application Pentest Checklist<span class="caret-cursor"></span></p>
+  <p class="lede">A trackable, OWASP-aligned checklist for <b>iOS</b> application penetration testing —
+  <b id="stat-count-inline">61</b> vulnerability playbooks drawn from the OWASP MASWE weakness catalogue,
+  each with attacker rationale, multi-technique exploitation PoCs, tools, and mitigations.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n" id="stat-playbooks" data-target="61">0</div><div class="l">Playbooks</div></div>
+    <div class="stat"><div class="n" id="stat-maswe" data-target="119">0</div><div class="l">MASWE catalogue</div></div>
+    <div class="stat"><div class="n" id="stat-cats" data-target="8">0</div><div class="l">MASVS categories</div></div>
+    <div class="stat"><div class="n" id="stat-guides" data-target="9">0</div><div class="l">Deep-dive guides</div></div>
+  </div>
+
+  <div class="controls">
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input id="searchInput" type="text" placeholder="Search playbooks, e.g. keychain, ATS, pasteboard…">
+    </div>
+    <button class="btn" id="clearBtn">Clear all ✕</button>
+  </div>
+
+  <div class="progress-row">
+    <span id="progressLabel">0 / 61 reviewed · 0%</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <h2 class="section-h">MASVS Categories</h2>
+  <div class="cat-grid" id="catGrid"></div>
+
+  <h2 class="section-h">Jailbreaking a Test Device</h2>
+  <p class="lede" style="margin-top:0;">Several playbooks above assume a jailbroken test device (Keychain dumping, filesystem access, ptrace/anti-debug testing). Jailbreak availability shifts constantly as Apple patches exploits — always verify current compatibility for your exact device and iOS build before relying on any of these, and only download tools from the projects' own official sites (lookalike sites bundling malware are common).</p>
+  <div class="list" id="jbList" style="margin-top:0;"></div>
+
+  <h2 class="section-h">Jailbreak Detection Bypass</h2>
+  <p class="lede" style="margin-top:0;">Once the device is jailbroken, most apps will actively try to detect and block that. These four approaches escalate in effort — try the one-command tools first, and fall back to custom hooking or static patching for apps with less common checks.</p>
+  <div class="list" id="jbDetectList" style="margin-top:0;"></div>
+
+  <h2 class="section-h">SSL / Certificate Pinning Bypass</h2>
+  <p class="lede" style="margin-top:0;">Pinning is usually the single control standing between a proxy setup and full traffic visibility. The right technique depends on what the app pins with — a known library (TrustKit, Alamofire, AFNetworking) is often a one-liner; custom validation logic needs a targeted hook.</p>
+  <div class="list" id="sslPinList" style="margin-top:0;"></div>
+
+  <div class="chip-row" id="sevRow">
+    <span class="chip active" data-sev="all">All severities</span>
+    <span class="chip" data-sev="critical"><span class="sw" style="background:var(--crit)"></span>Critical</span>
+    <span class="chip" data-sev="high"><span class="sw" style="background:var(--high)"></span>High</span>
+    <span class="chip" data-sev="medium"><span class="sw" style="background:var(--med)"></span>Medium</span>
+    <span class="chip" data-sev="low"><span class="sw" style="background:var(--low)"></span>Low</span>
+  </div>
+
+  <div class="list" id="list"></div>
+  <div class="empty" id="emptyState" style="display:none;">No matching checks.</div>
+
+  <div class="about">
+    <h3>📖 About this checklist</h3>
+    <p><b>iOSArsenal</b> is a single, dependable place to turn to when assessing iOS applications.
+    Whether you're mid-engagement and need the exact PoC steps for a WKWebView bridge, refreshing
+    your memory on Keychain accessibility flags, or handing a developer a clear remediation, it's
+    meant to be the reference you keep open in the other tab.</p>
+    <p>The guidance here is drawn from the <b>OWASP Mobile Application Security project</b> —
+    <a href="https://mas.owasp.org/MASVS/" target="_blank" rel="noopener">MASVS</a>,
+    <a href="https://mas.owasp.org/MASTG/" target="_blank" rel="noopener">MASTG</a>,
+    <a href="https://mas.owasp.org/MASWE/" target="_blank" rel="noopener">MASWE</a>, and the
+    <a href="https://mas.owasp.org/checklists/" target="_blank" rel="noopener">MAS Checklists</a> —
+    plus standard iOS platform documentation (Keychain Services, App Transport Security,
+    LocalAuthentication, WKWebView). MASWE is a platform-agnostic catalogue shared by Android and
+    iOS; these 61 playbooks map the entries that manifest through iOS-specific APIs and mechanisms.</p>
+    <p>This is an open, community-maintained project. Found a stale command, a broken bypass, or
+    want to add a newly disclosed vulnerability class? See
+    <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> — every playbook lives in a single
+    <code>data.js</code> file, so adding one is usually a single well-formed object in a pull request.</p>
+    <div class="warn">
+      <b>Use with care.</b> MASTG/MASWE reference IDs shown here are approximate pointers, not a
+      guaranteed 1:1 mapping — the OWASP MAS project is under active development and IDs shift between
+      revisions, so cross-check against the live docs before citing them in a report. Tooling and iOS
+      versions move quickly too: an entitlement gets deprecated, an API changes behaviour under App
+      Transport Security, or a jailbreak-detection bypass needs adjusting for the newest iOS release.
+      Treat every PoC as a starting point, not gospel.
+      <br><br>
+      <b>Authorised use only.</b> Everything here is for testing applications you own or are
+      <b>explicitly authorised</b> to assess — a signed engagement, an in-scope bug-bounty program, or
+      your own lab. Never use these techniques against apps or systems you don't have written
+      permission to test. Stay within scope and follow responsible disclosure.
+    </div>
+  </div>
+
+  <footer>
+    iOSArsenal · built for defensive-minded iOS security testing<br>
+    <a href="https://github.com/Savage-hack/iOSArsenal" target="_blank" rel="noopener">View on GitHub</a>
+    · <a href="CONTRIBUTING.md">Contribute</a>
+    · <a href="LICENSE">MIT License</a>
+  </footer>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
