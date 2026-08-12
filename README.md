@@ -38,10 +38,6 @@ Built as a single-page reference you keep open in the other tab during an engage
 - **Per-check "reviewed" tracking** with a live progress bar — state persists locally per browser.
 - **No build step, no dependencies.** Plain HTML/CSS/JS — clone it and open `index.html`, or serve it anywhere static files work.
 
-## Live demo
-
-Once deployed to GitHub Pages (see below), your live URL will be:
-
 ```
 https://Savage-hack.github.io/iOSArsenal/
 ```
@@ -55,19 +51,7 @@ open index.html          # macOS
 # or: python3 -m http.server 8000   then visit http://localhost:8000
 ```
 
-No build tools, no `npm install` — it's plain HTML/CSS/JS.
-
-## Deploying to GitHub Pages
-
-1. Push this repo to GitHub.
-2. Go to **Settings → Pages**.
-3. Under **Build and deployment**, set **Source** to `Deploy from a branch`.
-4. Pick the `main` branch and `/ (root)` folder, then **Save**.
-5. Your site will be live at `https://Savage-hack.github.io/iOSArsenal/` within a minute or two.
-
-Don't forget to update the placeholder URLs in `index.html`'s `<meta property="og:url">` and the footer's GitHub link once your repo is live.
-
-**Optional — social preview image:** `index.html` references `assets/social-preview.png` in its Open Graph/Twitter meta tags for link-preview cards (1200×630 recommended). That file doesn't exist yet — add your own screenshot/graphic at that path, or remove the two `og:image`/`twitter:image` tags if you'd rather skip it.
+No build tools, no `npm install` — it's plain HTML/CSS/JS
 
 ## What's inside
 
