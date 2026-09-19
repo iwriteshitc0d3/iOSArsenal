@@ -1,0 +1,22 @@
+services:
+  iosarsenal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: iosarsenal:latest
+    container_name: iosarsenal
+    restart: unless-stopped
+    ports:
+      # Defaults to 3080:3000 to prevent port collisions; configurable via PORT env var
+      - "${PORT:-3080}:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s

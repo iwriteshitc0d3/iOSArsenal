@@ -49,7 +49,30 @@ Now equipped with a **RESTful API engine** (Node.js/Express), a **declarative cl
 
 ## Quick start
 
-### Running with the API Engine (Recommended)
+### Running via Docker Compose (Recommended)
+
+iOSArsenal is fully containerized with Docker & Docker Compose:
+
+```bash
+git clone https://github.com/iwriteshitc0d3/iOSArsenal.git
+cd iOSArsenal
+
+# Build and start the container in the background
+docker compose up -d --build
+
+# Check status and health
+docker compose ps
+
+# View live container logs
+docker compose logs -f
+
+# Stop container
+docker compose down
+```
+
+The container starts on **`http://localhost:3080`** by default (configurable via `PORT` in `.env`). Reviewed checks state is persisted in `./data/reviewed.json` on the host volume.
+
+### Running with Node.js Locally
 
 ```bash
 git clone https://github.com/iwriteshitc0d3/iOSArsenal.git
@@ -65,7 +88,7 @@ npm test
 npm start
 ```
 
-Visit **`http://localhost:3000`** in your browser to access the UI and API.
+Visit **`http://localhost:3000`** in your browser.
 
 ### Running in Standalone / Static Mode
 
@@ -152,21 +175,25 @@ Shareable links can be copied directly from each playbook card using the 🔗 bu
 
 ```
 iOSArsenal/
-├── index.html        # Page shell, navbar, view panes, and meta tags
-├── style.css         # Styling, dark cyber theme, animations, and API UI
-├── data.js           # Playbooks + bypass modules (exports for Node & browser)
-├── app.js            # UI logic, state management, and API explorer runner
-├── api-client.js     # Frontend API Client with transparent offline fallback
-├── router.js         # Client-side router supporting deep-linking & history
-├── server.js         # Express web server & static asset host
+├── index.html          # Page shell, navbar, view panes, and meta tags
+├── style.css           # Styling, dark cyber theme, animations, and API UI
+├── data.js             # Playbooks + bypass modules (exports for Node & browser)
+├── app.js              # UI logic, state management, and API explorer runner
+├── api-client.js       # Frontend API Client with transparent offline fallback
+├── router.js           # Client-side router supporting deep-linking & history
+├── server.js           # Express web server & static asset host
+├── Dockerfile          # Production container image specification (Node 22 Alpine)
+├── docker-compose.yml  # Container orchestration with volume persistence
+├── .dockerignore       # Docker build ignore patterns
+├── .env.example        # Environment variable configuration template
 ├── routes/
-│   └── api.js        # RESTful API Engine router
+│   └── api.js          # RESTful API Engine router
 ├── test/
-│   └── api.test.js   # Automated integration test suite for API endpoints
-├── package.json      # Dependencies and run scripts (start, dev, test)
-├── CONTRIBUTING.md   # Schema + guide for adding new playbooks or techniques
-├── LICENSE           # MIT
-└── README.md         # Documentation
+│   └── api.test.js     # Automated integration test suite for API endpoints
+├── package.json        # Dependencies and run scripts (start, dev, test, docker)
+├── CONTRIBUTING.md     # Schema + guide for adding new playbooks or techniques
+├── LICENSE             # MIT
+└── README.md           # Documentation
 ```
 
 ---
