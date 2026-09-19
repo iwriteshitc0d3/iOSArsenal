@@ -693,3 +693,6 @@ ideviceinstaller -i App.ipa`},
    ]},
 ];
 
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { CATS, DATA, JAILBREAKS, JBDETECT, SSLPIN };
+}

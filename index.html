@@ -34,6 +34,19 @@
 
 <div class="wrap">
 
+  <nav class="nav-bar" id="mainNav">
+    <div class="nav-links">
+      <a href="#/" class="nav-link active" data-route="/">Checks</a>
+      <a href="#/categories" class="nav-link" data-route="/categories">Categories</a>
+      <a href="#/modules" class="nav-link" data-route="/modules">Guides &amp; Bypass</a>
+      <a href="#/api-docs" class="nav-link" data-route="/api-docs">REST API &amp; Explorer</a>
+    </div>
+    <div class="api-status-badge" id="apiStatusBadge" title="API Engine connectivity status">
+      <span class="status-dot"></span>
+      <span id="apiStatusText">Checking API...</span>
+    </div>
+  </nav>
+
   <div style="position:relative;">
     <svg class="hero-scan" viewBox="0 0 280 280">
       <g class="sweep-wrap">
@@ -72,44 +85,181 @@
     <div class="stat"><div class="n" id="stat-guides" data-target="9">0</div><div class="l">Deep-dive guides</div></div>
   </div>
 
-  <div class="controls">
-    <div class="search">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input id="searchInput" type="text" placeholder="Search playbooks, e.g. keychain, ATS, pasteboard…">
+  <!-- Main Checklist View Pane -->
+  <div id="viewChecklist" class="view-pane active">
+    <div class="controls">
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input id="searchInput" type="text" placeholder="Search playbooks, e.g. keychain, ATS, pasteboard…">
+      </div>
+      <button class="btn" id="clearBtn">Clear all ✕</button>
     </div>
-    <button class="btn" id="clearBtn">Clear all ✕</button>
+
+    <div class="progress-row">
+      <span id="progressLabel">0 / 61 reviewed · 0%</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <h2 class="section-h" id="headingCategories">MASVS Categories</h2>
+    <div class="cat-grid" id="catGrid"></div>
+
+    <h2 class="section-h" id="headingModules">Jailbreaking a Test Device</h2>
+    <p class="lede" style="margin-top:0;">Several playbooks above assume a jailbroken test device (Keychain dumping, filesystem access, ptrace/anti-debug testing). Jailbreak availability shifts constantly as Apple patches exploits — always verify current compatibility for your exact device and iOS build before relying on any of these, and only download tools from the projects' own official sites (lookalike sites bundling malware are common).</p>
+    <div class="list" id="jbList" style="margin-top:0;"></div>
+
+    <h2 class="section-h" id="headingJbDetect">Jailbreak Detection Bypass</h2>
+    <p class="lede" style="margin-top:0;">Once the device is jailbroken, most apps will actively try to detect and block that. These four approaches escalate in effort — try the one-command tools first, and fall back to custom hooking or static patching for apps with less common checks.</p>
+    <div class="list" id="jbDetectList" style="margin-top:0;"></div>
+
+    <h2 class="section-h" id="headingSslPin">SSL / Certificate Pinning Bypass</h2>
+    <p class="lede" style="margin-top:0;">Pinning is usually the single control standing between a proxy setup and full traffic visibility. The right technique depends on what the app pins with — a known library (TrustKit, Alamofire, AFNetworking) is often a one-liner; custom validation logic needs a targeted hook.</p>
+    <div class="list" id="sslPinList" style="margin-top:0;"></div>
+
+    <div class="chip-row" id="sevRow">
+      <span class="chip active" data-sev="all">All severities</span>
+      <span class="chip" data-sev="critical"><span class="sw" style="background:var(--crit)"></span>Critical</span>
+      <span class="chip" data-sev="high"><span class="sw" style="background:var(--high)"></span>High</span>
+      <span class="chip" data-sev="medium"><span class="sw" style="background:var(--med)"></span>Medium</span>
+      <span class="chip" data-sev="low"><span class="sw" style="background:var(--low)"></span>Low</span>
+    </div>
+
+    <div class="list" id="list"></div>
+    <div class="empty" id="emptyState" style="display:none;">No matching checks.</div>
   </div>
 
-  <div class="progress-row">
-    <span id="progressLabel">0 / 61 reviewed · 0%</span>
-    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <!-- REST API Engine & Interactive Explorer View Pane -->
+  <div id="viewApiDocs" class="view-pane">
+    <div class="api-docs-container">
+      <div class="api-card">
+        <h3>⚡ iOSArsenal REST API Engine</h3>
+        <p>The API engine exposes full programmatic access to all 61 vulnerability playbooks, OWASP MASVS categories, bypass techniques, and review status tracking. Both JSON endpoints and local offline evaluation are supported.</p>
+
+        <div class="api-test-runner">
+          <div class="api-test-runner-header">
+            <div style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);">
+              Interactive API Query Explorer
+            </div>
+            <span class="api-status-badge online" id="runnerStatusBadge"><span class="status-dot"></span><span id="runnerStatusText">Ready</span></span>
+          </div>
+
+          <form id="apiTestForm" class="api-test-form" onsubmit="return false;">
+            <div class="api-form-row">
+              <select id="apiEndpointPreset" class="api-select">
+                <option value="/api">GET /api (API Directory)</option>
+                <option value="/api/stats">GET /api/stats (Summary statistics)</option>
+                <option value="/api/categories">GET /api/categories (All categories)</option>
+                <option value="/api/categories/storage">GET /api/categories/storage</option>
+                <option value="/api/playbooks">GET /api/playbooks (All playbooks)</option>
+                <option value="/api/playbooks?sev=critical">GET /api/playbooks?sev=critical</option>
+                <option value="/api/playbooks?cat=crypto&sev=high">GET /api/playbooks?cat=crypto&sev=high</option>
+                <option value="/api/playbooks?q=keychain">GET /api/playbooks?q=keychain</option>
+                <option value="/api/playbooks/stor-1">GET /api/playbooks/stor-1</option>
+                <option value="/api/modules">GET /api/modules (All guide modules)</option>
+                <option value="/api/modules/jailbreaks">GET /api/modules/jailbreaks</option>
+                <option value="/api/modules/jbdetect">GET /api/modules/jbdetect</option>
+                <option value="/api/modules/sslpin">GET /api/modules/sslpin</option>
+                <option value="/api/reviewed">GET /api/reviewed (Review map)</option>
+                <option value="/api/export">GET /api/export (Full dataset export)</option>
+              </select>
+              <input id="apiCustomEndpoint" class="api-input" type="text" value="/api/stats" placeholder="Endpoint path, e.g. /api/playbooks?sev=critical">
+              <button type="button" id="apiSendBtn" class="api-btn">Send Request ⚡</button>
+            </div>
+          </form>
+
+          <div class="api-response-block" id="apiResponseBlock">
+            <div class="api-response-meta">
+              <span id="apiResStatus" class="status-tag status-200">200 OK</span>
+              <span id="apiResTime" style="color:var(--text-3);">0 ms</span>
+              <button class="card-action-btn" id="apiCopyCurlBtn" style="margin-left:auto;">📋 Copy cURL</button>
+              <button class="card-action-btn" id="apiCopyJsonBtn">📋 Copy JSON</button>
+            </div>
+            <pre><code id="apiResponseCode">// Click "Send Request" to execute an API call</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <h3>📚 API Specification Reference</h3>
+        <p>Available endpoints exposed by the Node.js Express router engine:</p>
+
+        <div class="api-endpoint-list">
+          <div class="api-endpoint-item">
+            <div class="api-endpoint-header">
+              <span class="method-badge method-get">GET</span>
+              <span class="endpoint-path">/api/stats</span>
+              <button class="card-action-btn run-endpoint-btn" data-url="/api/stats">Try ⚡</button>
+            </div>
+            <div class="endpoint-desc">Returns aggregate counts, review progress, and category/severity breakdown distributions.</div>
+          </div>
+
+          <div class="api-endpoint-item">
+            <div class="api-endpoint-header">
+              <span class="method-badge method-get">GET</span>
+              <span class="endpoint-path">/api/categories</span>
+              <button class="card-action-btn run-endpoint-btn" data-url="/api/categories">Try ⚡</button>
+            </div>
+            <div class="endpoint-desc">Lists all 8 MASVS categories with their metadata, icons, and dynamic count of checks.</div>
+          </div>
+
+          <div class="api-endpoint-item">
+            <div class="api-endpoint-header">
+              <span class="method-badge method-get">GET</span>
+              <span class="endpoint-path">/api/categories/:key</span>
+              <button class="card-action-btn run-endpoint-btn" data-url="/api/categories/storage">Try ⚡</button>
+            </div>
+            <div class="endpoint-desc">Returns category details and all associated vulnerability playbooks.</div>
+          </div>
+
+          <div class="api-endpoint-item">
+            <div class="api-endpoint-header">
+              <span class="method-badge method-get">GET</span>
+              <span class="endpoint-path">/api/playbooks</span>
+              <button class="card-action-btn run-endpoint-btn" data-url="/api/playbooks?sev=critical">Try ⚡</button>
+            </div>
+            <div class="endpoint-desc">Search and filter playbooks. Supported query params: <code>?cat=crypto</code>, <code>?sev=critical</code>, <code>?q=frida</code>, <code>?tool=objection</code>, <code>?sort=sev</code>.</div>
+          </div>
+
+          <div class="api-endpoint-item">
+            <div class="api-endpoint-header">
+              <span class="method-badge method-get">GET</span>
+              <span class="endpoint-path">/api/playbooks/:id</span>
+              <button class="card-action-btn run-endpoint-btn" data-url="/api/playbooks/stor-1">Try ⚡</button>
+            </div>
+            <div class="endpoint-desc">Returns the full playbook object including all multi-technique exploitation PoC commands, rationale, tools, and mitigations.</div>
+          </div>
+
+          <div class="api-endpoint-item">
+            <div class="api-endpoint-header">
+              <span class="method-badge method-get">GET</span>
+              <span class="endpoint-path">/api/modules/:type</span>
+              <button class="card-action-btn run-endpoint-btn" data-url="/api/modules/sslpin">Try ⚡</button>
+            </div>
+            <div class="endpoint-desc">Access reference modules: <code>jailbreaks</code>, <code>jbdetect</code> (detection bypass), and <code>sslpin</code> (certificate pinning bypass).</div>
+          </div>
+
+          <div class="api-endpoint-item">
+            <div class="api-endpoint-header">
+              <span class="method-badge method-get">GET</span>
+              <span class="method-badge method-post">POST</span>
+              <span class="method-badge method-delete">DELETE</span>
+              <span class="endpoint-path">/api/reviewed</span>
+              <button class="card-action-btn run-endpoint-btn" data-url="/api/reviewed">Try ⚡</button>
+            </div>
+            <div class="endpoint-desc">Persistent tracking state for reviewed checklist items. GET to retrieve, POST to update an item, DELETE to reset.</div>
+          </div>
+
+          <div class="api-endpoint-item">
+            <div class="api-endpoint-header">
+              <span class="method-badge method-get">GET</span>
+              <span class="endpoint-path">/api/export</span>
+              <button class="card-action-btn run-endpoint-btn" data-url="/api/export">Try ⚡</button>
+            </div>
+            <div class="endpoint-desc">Exports the entire knowledgebase (categories, 61 playbooks, and 3 bypass modules) in clean JSON format.</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <h2 class="section-h">MASVS Categories</h2>
-  <div class="cat-grid" id="catGrid"></div>
-
-  <h2 class="section-h">Jailbreaking a Test Device</h2>
-  <p class="lede" style="margin-top:0;">Several playbooks above assume a jailbroken test device (Keychain dumping, filesystem access, ptrace/anti-debug testing). Jailbreak availability shifts constantly as Apple patches exploits — always verify current compatibility for your exact device and iOS build before relying on any of these, and only download tools from the projects' own official sites (lookalike sites bundling malware are common).</p>
-  <div class="list" id="jbList" style="margin-top:0;"></div>
-
-  <h2 class="section-h">Jailbreak Detection Bypass</h2>
-  <p class="lede" style="margin-top:0;">Once the device is jailbroken, most apps will actively try to detect and block that. These four approaches escalate in effort — try the one-command tools first, and fall back to custom hooking or static patching for apps with less common checks.</p>
-  <div class="list" id="jbDetectList" style="margin-top:0;"></div>
-
-  <h2 class="section-h">SSL / Certificate Pinning Bypass</h2>
-  <p class="lede" style="margin-top:0;">Pinning is usually the single control standing between a proxy setup and full traffic visibility. The right technique depends on what the app pins with — a known library (TrustKit, Alamofire, AFNetworking) is often a one-liner; custom validation logic needs a targeted hook.</p>
-  <div class="list" id="sslPinList" style="margin-top:0;"></div>
-
-  <div class="chip-row" id="sevRow">
-    <span class="chip active" data-sev="all">All severities</span>
-    <span class="chip" data-sev="critical"><span class="sw" style="background:var(--crit)"></span>Critical</span>
-    <span class="chip" data-sev="high"><span class="sw" style="background:var(--high)"></span>High</span>
-    <span class="chip" data-sev="medium"><span class="sw" style="background:var(--med)"></span>Medium</span>
-    <span class="chip" data-sev="low"><span class="sw" style="background:var(--low)"></span>Low</span>
-  </div>
-
-  <div class="list" id="list"></div>
-  <div class="empty" id="emptyState" style="display:none;">No matching checks.</div>
 
   <div class="about">
     <h3>📖 About this checklist</h3>
@@ -146,13 +296,16 @@
 
   <footer>
     iOSArsenal · built for defensive-minded iOS security testing<br>
-    <a href="https://github.com/Savage-hack/iOSArsenal" target="_blank" rel="noopener">View on GitHub</a>
+    <a href="https://github.com/iwriteshitc0d3/iOSArsenal" target="_blank" rel="noopener">View on GitHub</a>
     · <a href="CONTRIBUTING.md">Contribute</a>
     · <a href="LICENSE">MIT License</a>
   </footer>
 </div>
 
 <script src="data.js"></script>
+<script src="api-client.js"></script>
+<script src="router.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
+

@@ -11,3 +11,8 @@ Thumbs.db
 node_modules/
 npm-debug.log*
 .env
+
+# Runtime persisted state
+data/*.json
+!data/.gitkeep
+

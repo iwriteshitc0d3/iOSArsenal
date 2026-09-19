@@ -1,0 +1,27 @@
+{
+  "name": "iosarsenal",
+  "version": "1.0.0",
+  "description": "**A trackable, OWASP-aligned checklist for iOS application penetration testing.**",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test/api.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iwriteshitc0d3/iOSArsenal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/iwriteshitc0d3/iOSArsenal/issues"
+  },
+  "homepage": "https://github.com/iwriteshitc0d3/iOSArsenal#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}
